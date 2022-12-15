@@ -1,5 +1,9 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "material-icon-theme.activeIconPack": "nest"
+  "material-icon-theme.activeIconPack": "nest",
+  "[prisma]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
 }

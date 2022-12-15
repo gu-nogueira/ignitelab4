@@ -1,0 +1,23 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Notification {
+  // ** Syntax: name, type, default value, optional
+  id          String    @id // * @id is a shorthand for @id @default(cuid()), it definens a unique identifier (PK)
+  recipientId String // * recipientId will be kind of a FK for another service entity
+  content     String
+  category    String
+  readAt      DateTime? // * ? means optional
+  createdAt   DateTime  @default(now())
+
+  @@index([recipientId]) // * index for recipientId. It will be used for filtering for better performance
+}
