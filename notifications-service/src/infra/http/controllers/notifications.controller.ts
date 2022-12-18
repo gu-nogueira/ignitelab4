@@ -1,8 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
-
-import { randomUUID } from 'crypto';
-import { CreateNotificationBody } from './create-notification-body';
+import { Body, Controller, Post } from '@nestjs/common';
+import { SendNotification } from 'src/app/services/send-notification';
+import { CreateNotificationBody } from '../dtos/create-notification-body';
 
 // * Every funcntion that inits with '@' is a decorator that herds the function that follows it.
 
@@ -20,25 +18,18 @@ import { CreateNotificationBody } from './create-notification-body';
 // * Notice: Nest uses SOLID principles. A example of this is the use of dependency inversion principle. The controller does not create the service, it is injected into the controller.
 
 @Controller('notifications')
-export class AppController {
-  constructor(private readonly prisma: PrismaService) {}
-
-  @Get()
-  list() {
-    return this.prisma.notification.findMany();
-  }
+export class NotificationsController {
+  constructor(private sendNotification: SendNotification) {}
 
   @Post()
   async create(@Body() body: CreateNotificationBody) {
     const { recipientId, content, category } = body;
-
-    await this.prisma.notification.create({
-      data: {
-        id: randomUUID(),
-        content,
-        category,
-        recipientId,
-      },
+    const { notification } = await this.sendNotification.execute({
+      recipientId,
+      content,
+      category,
     });
+
+    return { notification };
   }
 }

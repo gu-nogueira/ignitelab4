@@ -3,9 +3,14 @@
  * This is following the OOP principles of encapsulation
  */
 
+import { Replace } from 'src/helpers/Replace';
+import { Content } from './content';
+import { randomUUID } from 'node:crypto';
+
 export interface NotificationProps {
   recipientId: string;
-  content: string;
+  content: Content;
+  // * We will use the 'Content' class to handle the content of the notification
   category: string;
   // * Here's an important thing: the '?' means we inform to typescript that this property can be 'undefined' or 'null' after the pipe '|'. With 'null' we will override it.
   readAt?: Date | null;
@@ -13,10 +18,22 @@ export interface NotificationProps {
 }
 
 export class Notification {
+  // * id will not be in props for 2 reasons:
+  // * 1. It will be generated in application before being saved in database
+  // * 2. This is a way to prepare to allocate to it's own class, and all entities could extend from a 'BaseEntity' class
+  private _id: string;
   private props: NotificationProps;
 
-  constructor(props: NotificationProps) {
-    this.props = props;
+  constructor(props: Replace<NotificationProps, { createdAt?: Date }>) {
+    this._id = randomUUID();
+    this.props = {
+      ...props,
+      createdAt: props.createdAt ?? new Date(),
+    };
+  }
+
+  public get id(): string {
+    return this._id;
   }
 
   public get recipientId(): string {
@@ -27,11 +44,11 @@ export class Notification {
     this.props.recipientId = recipientId;
   }
 
-  public get content(): string {
+  public get content(): Content {
     return this.props.content;
   }
 
-  public set content(content: string) {
+  public set content(content: Content) {
     this.props.content = content;
   }
 
