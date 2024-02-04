@@ -17,6 +17,7 @@ model Notification {
   content     String
   category    String
   readAt      DateTime? // * ? means optional
+  canceledAt  DateTime?
   createdAt   DateTime  @default(now())
 
   @@index([recipientId]) // * index for recipientId. It will be used for filtering for better performance
